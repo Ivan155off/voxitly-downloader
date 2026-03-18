@@ -9,7 +9,6 @@ CORS(app)
 
 TEMP_DIR = tempfile.gettempdir()
 
-# Твой крутой HTML шаблон (AdSense + Voxitly UI)
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
@@ -17,7 +16,7 @@ HTML_TEMPLATE = """
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712778222245542" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voxitly Ultra | Professional Custom UI</title>
+    <title>Voxitly Ultra | Professional Downloader</title>
     <style>
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes glow { from { text-shadow: 0 0 10px #ff0000; } to { text-shadow: 0 0 25px #ff0000; } }
@@ -164,11 +163,12 @@ HTML_TEMPLATE = """
 def get_ydl_opts(f_id=None):
     opts = {
         'quiet': True,
-        'nocheckcertificate': True,
         'no_warnings': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'nocheckcertificate': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
         'referer': 'https://www.google.com/',
-        'ignoreerrors': True,
+        # Ограничиваем время ожидания, чтобы сайт не висел вечно
+        'socket_timeout': 10,
     }
     if os.path.exists('cookies.txt'):
         opts['cookiefile'] = 'cookies.txt'
@@ -185,36 +185,36 @@ def get_info():
     url = request.args.get('url')
     try:
         with yt_dlp.YoutubeDL(get_ydl_opts()) as ydl:
+            # Используем extract_flat=False, но ограничиваем поиск
             info = ydl.extract_info(url, download=False)
-            if not info: return jsonify({"error": "Could not extract video info."})
+            if not info:
+                return jsonify({"error": "Failed to get video info."})
             
             formats = []
             for f in info.get('formats', []):
-                # Собираем все рабочие ссылки
+                # Собираем только те, у которых есть ссылка
                 if f.get('url'):
-                    is_video = f.get('vcodec') != 'none'
-                    # Если разрешение не указано, пишем качество звука или заметку
-                    res = f.get('resolution') or f.get('format_note') or ("Video" if is_video else "Audio")
+                    vcodec = f.get('vcodec', 'none')
+                    is_video = vcodec != 'none' and vcodec is not None
+                    
                     formats.append({
                         "id": f.get('format_id'),
                         "ext": f.get('ext', 'mp4'),
-                        "res": res if is_video else "Audio",
-                        "abr": round(f.get('abr', 0) or 0, 2),
+                        "res": f.get('resolution') or f.get('format_note') or ("Video" if is_video else "Audio"),
+                        "abr": f.get('abr') or 0,
                         "v": is_video
                     })
             
-            if not formats: return jsonify({"error": "No formats found. Video might be restricted."})
-            
+            if not formats:
+                return jsonify({"error": "No available formats for this video."})
+
             return jsonify({
-                "title": info.get('title', 'Unknown Title'),
+                "title": info.get('title', 'Video'),
                 "thumbnail": info.get('thumbnail', ''),
                 "formats": formats
             })
     except Exception as e:
-        msg = str(e).lower()
-        if "bot" in msg or "sign in" in msg:
-            return jsonify({"error": "YouTube blocked server. Cookies needed."})
-        return jsonify({"error": f"Error: {str(e)[:100]}"})
+        return jsonify({"error": f"YouTube blocked request. Please update cookies.txt."})
 
 @app.route('/api/download')
 def download():
@@ -224,7 +224,8 @@ def download():
             info = ydl.extract_info(url, download=True)
             path = ydl.prepare_filename(info)
         return send_file(path, as_attachment=True)
-    except Exception as e: return f"Download failed: {str(e)}"
+    except Exception as e:
+        return f"Download failed. YouTube might have restricted this file."
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8080))
