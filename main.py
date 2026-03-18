@@ -9,12 +9,12 @@ CORS(app)
 
 TEMP_DIR = tempfile.gettempdir()
 
+# Твой крутой HTML шаблон (AdSense + Voxitly UI)
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712778222245542" crossorigin="anonymous"></script>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voxitly Ultra | Professional Custom UI</title>
@@ -22,89 +22,42 @@ HTML_TEMPLATE = """
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes glow { from { text-shadow: 0 0 10px #ff0000; } to { text-shadow: 0 0 25px #ff0000; } }
         @keyframes bgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
         body { 
             background: linear-gradient(-45deg, #050505, #1a0000, #050505, #000);
             background-size: 400% 400%; animation: bgMove 15s ease infinite; color: white; font-family: 'Segoe UI', sans-serif; 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0;
             padding: 60px 20px; box-sizing: border-box; overflow-x: hidden;
         }
-        
-        .ad-side {
-            position: fixed; top: 50%; transform: translateY(-50%);
-            width: 160px; height: 600px; background: rgba(255,255,255,0.02);
-            border: 1px dashed rgba(255,0,0,0.15); display: flex; align-items: center; justify-content: center;
-            color: #333; font-size: 11px; z-index: 10; text-transform: uppercase; letter-spacing: 2px;
-        }
-        .ad-left { left: 30px; }
-        .ad-right { right: 30px; }
-
-        .ad-bottom {
-            width: 100%; max-width: 970px; height: 250px; margin-top: 100px; margin-bottom: 50px;
-            background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,0,0,0.15);
-            display: flex; align-items: center; justify-content: center; color: #333;
-            border-radius: 20px; text-transform: uppercase; letter-spacing: 2px;
-        }
-
+        .ad-side { position: fixed; top: 50%; transform: translateY(-50%); width: 160px; height: 600px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,0,0,0.15); display: flex; align-items: center; justify-content: center; color: #333; font-size: 11px; z-index: 10; text-transform: uppercase; letter-spacing: 2px; }
+        .ad-left { left: 30px; } .ad-right { right: 30px; }
+        .ad-bottom { width: 100%; max-width: 970px; height: 250px; margin-top: 100px; margin-bottom: 50px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,0,0,0.15); display: flex; align-items: center; justify-content: center; color: #333; border-radius: 20px; text-transform: uppercase; letter-spacing: 2px; }
         @media (max-width: 1300px) { .ad-side { display: none; } }
-
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; }
-
-        .box { 
-            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 0, 0, 0.2); border-radius: 35px; 
-            padding: clamp(20px, 5vw, 50px); width: 100%; max-width: 500px; text-align: center; 
-            box-shadow: 0 0 80px rgba(0,0,0,1), 0 0 30px rgba(255,0,0,0.2);
-            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-            position: relative; z-index: 5;
-        }
-        
+        .box { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 0, 0, 0.2); border-radius: 35px; padding: clamp(20px, 5vw, 50px); width: 100%; max-width: 500px; text-align: center; box-shadow: 0 0 80px rgba(0,0,0,1), 0 0 30px rgba(255,0,0,0.2); animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; z-index: 5; }
         h1 { color: #ff0000; letter-spacing: 15px; margin: 0; font-size: clamp(1.8em, 8vw, 3em); animation: glow 2s infinite alternate; font-weight: 900; }
         .tagline { color: #555; font-size: 0.75em; margin-top: 12px; text-transform: uppercase; letter-spacing: 4px; }
-        
-        input { 
-            width: 100%; padding: 18px; background: rgba(15, 15, 15, 0.7); border: 1px solid #222; color: white; 
-            border-radius: 18px; margin: 30px 0 12px 0; box-sizing: border-box; outline: none; transition: 0.4s; font-size: 16px;
-        }
+        input { width: 100%; padding: 18px; background: rgba(15, 15, 15, 0.7); border: 1px solid #222; color: white; border-radius: 18px; margin: 30px 0 12px 0; box-sizing: border-box; outline: none; transition: 0.4s; font-size: 16px; }
         input:focus { border-color: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.25); background: rgba(25, 25, 25, 0.8); }
-        
-        .btn { 
-            width: 100%; padding: 20px; background: #ff0000; color: white; border: none; border-radius: 18px; 
-            font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 2px;
-        }
+        .btn { width: 100%; padding: 20px; background: #ff0000; color: white; border: none; border-radius: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 2px; }
         .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(255,0,0,0.4); background: #ff1a1a; }
-        
         .dl-btn { background: #00ff41 !important; color: #000 !important; margin-top: 25px; box-shadow: 0 5px 15px rgba(0,255,65,0.2); }
-
-        #res { 
-            max-height: 0; opacity: 0; transition: max-height 0.8s ease, opacity 0.5s ease;
-            text-align: left; background: rgba(0,0,0,0.5); border-radius: 25px; overflow: hidden; 
-        }
+        #res { max-height: 0; opacity: 0; transition: max-height 0.8s ease, opacity 0.5s ease; text-align: left; background: rgba(0,0,0,0.5); border-radius: 25px; overflow: hidden; }
         #res.active { max-height: 1500px; opacity: 1; margin-top: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
-
         .thumb { width: 100%; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
-        label { font-size: 0.7em; color: #ff0000; margin: 15px 0 6px 5px; font-weight: bold; text-transform: uppercase; display: block; letter-spacing: 1px;}
-
+        label { font-size: 0.7em; color: #ff0000; margin: 15px 0 6px 5px; font-weight: bold; text-transform: uppercase; display: block; letter-spacing: 1px; }
         .vox-dropdown { position: relative; width: 100%; margin-bottom: 15px; }
-        .vox-dropdown-header { 
-            background: rgba(35, 35, 35, 0.9); border: 1px solid #333; color: white; border-radius: 16px; padding: 18px; 
-            cursor: pointer; position: relative; transition: 0.3s; font-size: 0.95em;
-        }
+        .vox-dropdown-header { background: rgba(35, 35, 35, 0.9); border: 1px solid #333; color: white; border-radius: 16px; padding: 18px; cursor: pointer; position: relative; transition: 0.3s; font-size: 0.95em; }
         .vox-dropdown-header::after { content: '▼'; position: absolute; right: 20px; color: #666; font-size: 0.8em; }
-        .vox-dropdown-list { 
-            position: absolute; top: 105%; left: 0; width: 100%; background: #0f0f0f; border: 1px solid #ff0000; border-radius: 16px; 
-            max-height: 0; opacity: 0; visibility: hidden; overflow-y: auto; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
+        .vox-dropdown-list { position: absolute; top: 105%; left: 0; width: 100%; background: #0f0f0f; border: 1px solid #ff0000; border-radius: 16px; max-height: 0; opacity: 0; visibility: hidden; overflow-y: auto; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .vox-dropdown.open .vox-dropdown-list { max-height: 250px; opacity: 1; visibility: visible; }
         .vox-dropdown-item { padding: 14px 20px; color: #bbb; cursor: pointer; border-bottom: 1px solid #1a1a1a; transition: 0.2s; }
         .vox-dropdown-item:hover { background: #220000; color: #ff0000; padding-left: 25px; }
-        
         #status { color: #ffcc00; margin-top: 18px; font-size: 0.85em; text-align: center; font-weight: 500; }
     </style>
 </head>
 <body>
     <div class="ad-side ad-left">Ad Space</div>
     <div class="ad-side ad-right">Ad Space</div>
-
     <div class="container">
         <div class="box">
             <h1>VOXITLY</h1>
@@ -134,7 +87,6 @@ HTML_TEMPLATE = """
         </div>
         <div class="ad-bottom">Premium Ad Placement Slot</div>
     </div>
-
     <script>
         let videoData = [];
         let selectedType = "video";
@@ -209,7 +161,6 @@ HTML_TEMPLATE = """
 </html>
 """
 
-# Функция настройки yt-dlp с учетом куки и защиты
 def get_ydl_opts(f_id=None):
     opts = {
         'quiet': True,
@@ -217,8 +168,8 @@ def get_ydl_opts(f_id=None):
         'no_warnings': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'referer': 'https://www.google.com/',
+        'ignoreerrors': True,
     }
-    # Проверяем наличие файла cookies.txt
     if os.path.exists('cookies.txt'):
         opts['cookiefile'] = 'cookies.txt'
     if f_id:
@@ -235,27 +186,45 @@ def get_info():
     try:
         with yt_dlp.YoutubeDL(get_ydl_opts()) as ydl:
             info = ydl.extract_info(url, download=False)
+            if not info: return jsonify({"error": "Could not extract video info."})
+            
             formats = []
             for f in info.get('formats', []):
-                if f.get('acodec') != 'none':
+                # Собираем все рабочие ссылки
+                if f.get('url'):
+                    is_video = f.get('vcodec') != 'none'
+                    # Если разрешение не указано, пишем качество звука или заметку
+                    res = f.get('resolution') or f.get('format_note') or ("Video" if is_video else "Audio")
                     formats.append({
-                        "id": f['format_id'], "ext": f['ext'], 
-                        "res": f.get('resolution', 'Audio'), 
-                        "abr": round(f.get('abr', 0) or 0, 2), 
-                        "v": f.get('vcodec') != 'none'
+                        "id": f.get('format_id'),
+                        "ext": f.get('ext', 'mp4'),
+                        "res": res if is_video else "Audio",
+                        "abr": round(f.get('abr', 0) or 0, 2),
+                        "v": is_video
                     })
-            return jsonify({"title": info.get('title'), "thumbnail": info.get('thumbnail'), "formats": formats})
+            
+            if not formats: return jsonify({"error": "No formats found. Video might be restricted."})
+            
+            return jsonify({
+                "title": info.get('title', 'Unknown Title'),
+                "thumbnail": info.get('thumbnail', ''),
+                "formats": formats
+            })
     except Exception as e:
-        return jsonify({"error": "YouTube block. Upload cookies.txt to GitHub." if "bot" in str(e).lower() else str(e)})
+        msg = str(e).lower()
+        if "bot" in msg or "sign in" in msg:
+            return jsonify({"error": "YouTube blocked server. Cookies needed."})
+        return jsonify({"error": f"Error: {str(e)[:100]}"})
 
 @app.route('/api/download')
 def download():
     url, f_id = request.args.get('url'), request.args.get('f')
     try:
         with yt_dlp.YoutubeDL(get_ydl_opts(f_id)) as ydl:
-            path = ydl.prepare_filename(ydl.extract_info(url, download=True))
+            info = ydl.extract_info(url, download=True)
+            path = ydl.prepare_filename(info)
         return send_file(path, as_attachment=True)
-    except Exception as e: return str(e)
+    except Exception as e: return f"Download failed: {str(e)}"
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8080))
