@@ -28,7 +28,6 @@ HTML_TEMPLATE = """
             padding: 60px 20px; box-sizing: border-box; overflow-x: hidden;
         }
         
-        /* РЕКЛАМНЫЕ СТИЛИ */
         .ad-side {
             position: fixed; top: 50%; transform: translateY(-50%);
             width: 160px; height: 600px; background: rgba(255,255,255,0.02);
@@ -39,16 +38,15 @@ HTML_TEMPLATE = """
         .ad-right { right: 30px; }
 
         .ad-bottom {
-            width: 100%; max-width: 970px; /* Большой формат Billboard */
+            width: 100%; max-width: 970px;
             height: 250px; 
-            margin-top: 100px; /* ОТСТУП НИЖЕ */
+            margin-top: 100px; /* Тот самый отступ ниже */
             margin-bottom: 50px;
             background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,0,0,0.15);
             display: flex; align-items: center; justify-content: center; color: #333;
             border-radius: 20px; text-transform: uppercase; letter-spacing: 2px;
         }
 
-        /* Скрываем боковую рекламу на планшетах и телефонах */
         @media (max-width: 1300px) { .ad-side { display: none; } }
 
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; }
@@ -77,7 +75,6 @@ HTML_TEMPLATE = """
         .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(255,0,0,0.4); background: #ff1a1a; }
         
         .dl-btn { background: #00ff41 !important; color: #000 !important; margin-top: 25px; box-shadow: 0 5px 15px rgba(0,255,65,0.2); }
-        .dl-btn:hover { box-shadow: 0 10px 25px rgba(0,255,65,0.4); transform: translateY(-4px); }
 
         #res { 
             max-height: 0; opacity: 0; 
@@ -286,5 +283,8 @@ def download():
         return send_file(path, as_attachment=True)
     except Exception as e: return str(e)
 
+# --- ИСПРАВЛЕННЫЙ БЛОК ДЛЯ RENDER ---
 if __name__ == '__main__':
-    app.run(port=8080, debug=True)
+    # Порт для Render берется из переменной окружения
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
