@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: voxitly-downloader
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn api.main:app
