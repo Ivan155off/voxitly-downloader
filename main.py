@@ -40,10 +40,7 @@ HTML_TEMPLATE = """
         .ad-right { right: 30px; }
 
         .ad-bottom {
-            width: 100%; max-width: 970px;
-            height: 250px; 
-            margin-top: 100px;
-            margin-bottom: 50px;
+            width: 100%; max-width: 970px; height: 250px; margin-top: 100px; margin-bottom: 50px;
             background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,0,0,0.15);
             display: flex; align-items: center; justify-content: center; color: #333;
             border-radius: 20px; text-transform: uppercase; letter-spacing: 2px;
@@ -79,10 +76,8 @@ HTML_TEMPLATE = """
         .dl-btn { background: #00ff41 !important; color: #000 !important; margin-top: 25px; box-shadow: 0 5px 15px rgba(0,255,65,0.2); }
 
         #res { 
-            max-height: 0; opacity: 0; 
-            transition: max-height 0.8s ease, opacity 0.5s ease;
-            text-align: left; background: rgba(0,0,0,0.5); border-radius: 25px;
-            overflow: hidden; 
+            max-height: 0; opacity: 0; transition: max-height 0.8s ease, opacity 0.5s ease;
+            text-align: left; background: rgba(0,0,0,0.5); border-radius: 25px; overflow: hidden; 
         }
         #res.active { max-height: 1500px; opacity: 1; margin-top: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
 
@@ -96,10 +91,8 @@ HTML_TEMPLATE = """
         }
         .vox-dropdown-header::after { content: '▼'; position: absolute; right: 20px; color: #666; font-size: 0.8em; }
         .vox-dropdown-list { 
-            position: absolute; top: 105%; left: 0; width: 100%; background: #0f0f0f; 
-            border: 1px solid #ff0000; border-radius: 16px; 
-            max-height: 0; opacity: 0; visibility: hidden; overflow-y: auto; z-index: 9999;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: absolute; top: 105%; left: 0; width: 100%; background: #0f0f0f; border: 1px solid #ff0000; border-radius: 16px; 
+            max-height: 0; opacity: 0; visibility: hidden; overflow-y: auto; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .vox-dropdown.open .vox-dropdown-list { max-height: 250px; opacity: 1; visibility: visible; }
         .vox-dropdown-item { padding: 14px 20px; color: #bbb; cursor: pointer; border-bottom: 1px solid #1a1a1a; transition: 0.2s; }
@@ -109,7 +102,6 @@ HTML_TEMPLATE = """
     </style>
 </head>
 <body>
-
     <div class="ad-side ad-left">Ad Space</div>
     <div class="ad-side ad-right">Ad Space</div>
 
@@ -117,10 +109,8 @@ HTML_TEMPLATE = """
         <div class="box">
             <h1>VOXITLY</h1>
             <div class="tagline">Ultra Downloader</div>
-            
             <input type="text" id="url" placeholder="Enter YouTube URL...">
             <button class="btn" id="mainBtn" onclick="analyze()">Analyze</button>
-            
             <div id="res">
                 <div id="info"></div>
                 <div id="controls" style="display:none; opacity:0; transition: 0.5s;">
@@ -132,19 +122,16 @@ HTML_TEMPLATE = """
                             <div class="vox-dropdown-item" data-value="audio">Audio (MP3/WebM)</div>
                         </div>
                     </div>
-                    
                     <label>Quality</label>
                     <div class="vox-dropdown" id="qualityDropdown">
                         <div class="vox-dropdown-header" id="qualityHeader">Loading...</div>
                         <div class="vox-dropdown-list" id="qualityList"></div>
                     </div>
-                    
                     <button class="btn dl-btn" id="dlBtn" onclick="download()">Download Now</button>
                     <div id="status"></div>
                 </div>
             </div>
         </div>
-
         <div class="ad-bottom">Premium Ad Placement Slot</div>
     </div>
 
@@ -158,9 +145,7 @@ HTML_TEMPLATE = """
                 const header = dropdown.querySelector('.vox-dropdown-header');
                 header.onclick = (e) => {
                     e.stopPropagation();
-                    document.querySelectorAll('.vox-dropdown.open').forEach(d => {
-                        if(d !== dropdown) d.classList.remove('open');
-                    });
+                    document.querySelectorAll('.vox-dropdown.open').forEach(d => { if(d !== dropdown) d.classList.remove('open'); });
                     dropdown.classList.toggle('open');
                 };
             });
@@ -172,14 +157,8 @@ HTML_TEMPLATE = """
             const header = dropdown.querySelector('.vox-dropdown-header');
             header.innerText = item.innerText;
             dropdown.classList.remove('open');
-
-            if(dropdownId === 'typeDropdown') {
-                selectedType = item.dataset.value;
-                updateQualityList();
-            } else {
-                selectedFormatId = item.dataset.value;
-                document.getElementById('dlBtn').innerText = `Download (${item.innerText})`;
-            }
+            if(dropdownId === 'typeDropdown') { selectedType = item.dataset.value; updateQualityList(); }
+            else { selectedFormatId = item.dataset.value; document.getElementById('dlBtn').innerText = `Download (${item.innerText})`; }
         }
 
         async function analyze() {
@@ -188,29 +167,15 @@ HTML_TEMPLATE = """
             const btn = document.getElementById('mainBtn');
             const res = document.getElementById('res');
             btn.innerText = "Analyzing...";
-            
             try {
                 const r = await fetch(`/api/info?url=${encodeURIComponent(urlInput.value)}`);
                 const d = await r.json();
                 if(d.error) throw new Error(d.error);
-
                 videoData = d.formats;
-                document.getElementById('info').innerHTML = `
-                    <img src="${d.thumbnail}" class="thumb">
-                    <div style="font-weight: bold; margin-bottom: 10px;">${d.title}</div>
-                `;
-                
+                document.getElementById('info').innerHTML = `<img src="${d.thumbnail}" class="thumb"><div style="font-weight: bold; margin-bottom: 10px;">${d.title}</div>`;
                 document.getElementById('controls').style.display = "block";
-                setTimeout(() => {
-                    document.getElementById('controls').style.opacity = "1";
-                    res.classList.add('active');
-                    updateQualityList();
-                    btn.innerText = "Analyze";
-                }, 100);
-            } catch(e) {
-                alert("Error: " + e.message);
-                btn.innerText = "Analyze";
-            }
+                setTimeout(() => { res.classList.add('active'); document.getElementById('controls').style.opacity = "1"; updateQualityList(); btn.innerText = "Analyze"; }, 100);
+            } catch(e) { alert("Error: " + e.message); btn.innerText = "Analyze"; }
         }
 
         function updateQualityList() {
@@ -218,29 +183,20 @@ HTML_TEMPLATE = """
             const header = document.getElementById('qualityHeader');
             list.innerHTML = "";
             const filtered = videoData.filter(f => selectedType === 'video' ? f.v : !f.v);
-            
             filtered.forEach((f, index) => {
                 const item = document.createElement('div');
                 item.className = 'vox-dropdown-item';
                 item.dataset.value = f.id;
                 const label = selectedType === 'video' ? `${f.res} (${f.ext})` : `${f.abr} kbps`;
                 item.innerText = label;
-                
-                if(index === 0) {
-                    selectedFormatId = f.id;
-                    header.innerText = label;
-                    document.getElementById('dlBtn').innerText = `Download (${label})`;
-                }
-                
+                if(index === 0) { selectedFormatId = f.id; header.innerText = label; document.getElementById('dlBtn').innerText = `Download (${label})`; }
                 item.onclick = (e) => { e.stopPropagation(); handleItemClick('qualityDropdown', item); };
                 list.appendChild(item);
             });
         }
 
         document.addEventListener('DOMContentLoaded', initCustomDropdowns);
-        document.querySelectorAll('#typeDropdown .vox-dropdown-item').forEach(item => {
-            item.onclick = (e) => { e.stopPropagation(); handleItemClick('typeDropdown', item); };
-        });
+        document.querySelectorAll('#typeDropdown .vox-dropdown-item').forEach(item => { item.onclick = (e) => { e.stopPropagation(); handleItemClick('typeDropdown', item); }; });
 
         function download() {
             const url = document.getElementById('url').value;
@@ -253,6 +209,23 @@ HTML_TEMPLATE = """
 </html>
 """
 
+# Функция настройки yt-dlp с учетом куки и защиты
+def get_ydl_opts(f_id=None):
+    opts = {
+        'quiet': True,
+        'nocheckcertificate': True,
+        'no_warnings': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'referer': 'https://www.google.com/',
+    }
+    # Проверяем наличие файла cookies.txt
+    if os.path.exists('cookies.txt'):
+        opts['cookiefile'] = 'cookies.txt'
+    if f_id:
+        opts['format'] = f_id
+        opts['outtmpl'] = os.path.join(TEMP_DIR, '%(title)s.%(ext)s')
+    return opts
+
 @app.route('/')
 def index(): return render_template_string(HTML_TEMPLATE)
 
@@ -260,27 +233,26 @@ def index(): return render_template_string(HTML_TEMPLATE)
 def get_info():
     url = request.args.get('url')
     try:
-        with yt_dlp.YoutubeDL({'quiet': True, 'nocheckcertificate': True}) as ydl:
+        with yt_dlp.YoutubeDL(get_ydl_opts()) as ydl:
             info = ydl.extract_info(url, download=False)
             formats = []
             for f in info.get('formats', []):
                 if f.get('acodec') != 'none':
                     formats.append({
-                        "id": f['format_id'], 
-                        "ext": f['ext'], 
+                        "id": f['format_id'], "ext": f['ext'], 
                         "res": f.get('resolution', 'Audio'), 
                         "abr": round(f.get('abr', 0) or 0, 2), 
                         "v": f.get('vcodec') != 'none'
                     })
             return jsonify({"title": info.get('title'), "thumbnail": info.get('thumbnail'), "formats": formats})
-    except Exception as e: return jsonify({"error": str(e)})
+    except Exception as e:
+        return jsonify({"error": "YouTube block. Upload cookies.txt to GitHub." if "bot" in str(e).lower() else str(e)})
 
 @app.route('/api/download')
 def download():
     url, f_id = request.args.get('url'), request.args.get('f')
-    opts = {'format': f_id, 'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'), 'nocheckcertificate': True}
     try:
-        with yt_dlp.YoutubeDL(opts) as ydl:
+        with yt_dlp.YoutubeDL(get_ydl_opts(f_id)) as ydl:
             path = ydl.prepare_filename(ydl.extract_info(url, download=True))
         return send_file(path, as_attachment=True)
     except Exception as e: return str(e)
