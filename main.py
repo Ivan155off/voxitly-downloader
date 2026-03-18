@@ -13,6 +13,8 @@ HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
 <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712778222245542" crossorigin="anonymous"></script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voxitly Ultra | Professional Custom UI</title>
@@ -40,7 +42,7 @@ HTML_TEMPLATE = """
         .ad-bottom {
             width: 100%; max-width: 970px;
             height: 250px; 
-            margin-top: 100px; /* Тот самый отступ ниже */
+            margin-top: 100px;
             margin-bottom: 50px;
             background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,0,0,0.15);
             display: flex; align-items: center; justify-content: center; color: #333;
@@ -283,8 +285,6 @@ def download():
         return send_file(path, as_attachment=True)
     except Exception as e: return str(e)
 
-# --- ИСПРАВЛЕННЫЙ БЛОК ДЛЯ RENDER ---
 if __name__ == '__main__':
-    # Порт для Render берется из переменной окружения
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
